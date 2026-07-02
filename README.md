@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/29598577/README.md)
 # Loan Officer Toolkit
 
 A full loan-officer CRM built on top of the original Loan Calculator — same ledger-inspired
