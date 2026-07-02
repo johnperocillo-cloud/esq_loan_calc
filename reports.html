@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reports — Loan Officer Toolkit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+
+<div class="wrap">
+
+  <div class="flex-between" style="margin:20px 0 18px;">
+    <div>
+      <span class="eyebrow">Reports</span>
+      <h1 style="font-size:22px;">Portfolio insights</h1>
+    </div>
+  </div>
+
+  <div class="stat-grid" id="reportStats"></div>
+
+  <div class="stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(320px,1fr));">
+    <div class="chart-card">
+      <h2 style="font-size:14px; margin-bottom:12px;">Applications by Status</h2>
+      <canvas id="chartStatus" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <h2 style="font-size:14px; margin-bottom:12px;">Loan Types</h2>
+      <canvas id="chartLoanTypes" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <h2 style="font-size:14px; margin-bottom:12px;">Completion % Distribution</h2>
+      <canvas id="chartCompletion" height="220"></canvas>
+    </div>
+    <div class="chart-card">
+      <h2 style="font-size:14px; margin-bottom:12px;">Monthly Clients</h2>
+      <canvas id="chartMonthly" height="220"></canvas>
+    </div>
+    <div class="chart-card" style="grid-column: 1 / -1;">
+      <h2 style="font-size:14px; margin-bottom:12px;">Pending Documents by Section</h2>
+      <canvas id="chartPendingDocs" height="140"></canvas>
+    </div>
+  </div>
+
+  <div class="layout-2col" style="margin-top:20px;">
+    <div class="panel">
+      <h2>Export</h2>
+      <p class="sub">Download your data for reporting or sharing.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="exportClientSelect">Single client (PDF)</label>
+          <select id="exportClientSelect"></select>
+        </div>
+        <div class="field" style="display:flex; align-items:flex-end;">
+          <button class="btn btn-primary" id="exportSingleBtn" style="width:100%;">⇩ Export Client PDF</button>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="chip-row">
+        <button class="btn btn-sm" id="exportAllPdfBtn">⇩ All Clients — PDF</button>
+        <button class="btn btn-sm" id="exportAllJsonBtn">⇩ All Clients — JSON</button>
+        <button class="btn btn-sm" id="exportAllCsvBtn">⇩ All Clients — CSV</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Backup &amp; Restore</h2>
+      <p class="sub">Your entire toolkit — clients, checklists, notes, and settings — as one file.</p>
+      <button class="btn btn-accent" id="backupBtn" style="width:100%; margin-bottom:10px;">💾 Create Backup</button>
+      <label class="btn" style="width:100%; display:flex; margin-bottom:0; cursor:pointer;">
+        📂 Restore Backup
+        <input type="file" id="restoreInput" accept="application/json" style="display:none;">
+      </label>
+      <p class="help">Restoring replaces all current data in this browser.</p>
+    </div>
+  </div>
+
+  <footer class="note">Loan Officer Toolkit — all data stored locally in this browser.</footer>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/checklist-schema.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/reports.js"></script>
+</body>
+</html>

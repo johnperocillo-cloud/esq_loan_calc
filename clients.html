@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Manager — Loan Officer Toolkit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div id="navbar-root"></div>
+
+<div class="wrap">
+
+  <div class="flex-between" style="margin:20px 0 18px;">
+    <div>
+      <span class="eyebrow">Client Manager</span>
+      <h1 style="font-size:22px;">Your loan applicant pipeline</h1>
+    </div>
+    <button class="btn btn-accent" id="addClientBtn">➕ New Client</button>
+  </div>
+
+  <div class="panel" style="margin-bottom:20px;">
+    <div class="flex-between" style="margin-bottom:14px; gap:14px;">
+      <div style="flex:1; min-width:220px;">
+        <input type="search" id="searchInput" placeholder="🔎  Search client name, ID, contact, or notes…">
+      </div>
+    </div>
+    <div class="chip-row" id="statusChips">
+      <button class="chip active" data-status="all">All</button>
+      <button class="chip" data-status="pending">Pending</button>
+      <button class="chip" data-status="in-progress">In Progress</button>
+      <button class="chip" data-status="completed">Completed</button>
+      <button class="chip" data-status="cancelled">Cancelled</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="table-wrap">
+      <table class="data-table" id="clientsTable">
+        <thead>
+          <tr>
+            <th>Client ID</th><th>Name</th><th>Loan Amount</th><th>Loan Type</th>
+            <th>Completion %</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="clientsBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="clientsEmpty" style="display:none;">
+      <div class="big-icon">👥</div>
+      <p>No clients match your search yet.</p>
+      <button class="btn btn-primary" id="emptyAddBtn">➕ Add your first client</button>
+    </div>
+  </div>
+
+  <footer class="note">Loan Officer Toolkit — all data stored locally in this browser.</footer>
+</div>
+
+<!-- ============ ADD / EDIT CLIENT MODAL ============ -->
+<div class="modal-overlay no-print" id="clientFormOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="clientFormTitle">New Client</h2>
+      <button class="modal-close" data-close-modal="clientFormOverlay">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="cfId">
+      <div class="field">
+        <label for="cfName">Applicant name</label>
+        <input type="text" id="cfName" placeholder="e.g. Juan Dela Cruz">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="cfContact">Contact number</label>
+          <input type="tel" id="cfContact" placeholder="09xx xxx xxxx">
+        </div>
+        <div class="field">
+          <label for="cfStatus">Status</label>
+          <select id="cfStatus">
+            <option value="pending">Pending</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="cfAmount">Loan amount</label>
+          <div class="input-group"><span class="prefix">₱</span><input type="number" id="cfAmount" class="has-prefix" min="0" step="1000" value="750000"></div>
+        </div>
+        <div class="field">
+          <label for="cfTerm">Loan term (months)</label>
+          <input type="number" id="cfTerm" min="1" step="1" value="12">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="cfLoanType">Loan type</label>
+          <select id="cfLoanType">
+            <option value="new">New Client</option>
+            <option value="additional">Additional Loan</option>
+            <option value="reloan">Re-loan</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="cfBusinessType">Business type</label>
+          <select id="cfBusinessType">
+            <option value="sole">Sole Proprietorship</option>
+            <option value="corporation">Corporation</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="cfInterest">Interest rate (%/mo)</label>
+          <input type="number" id="cfInterest" min="0" step="0.1" value="3.5">
+        </div>
+        <div class="field">
+          <label for="cfFee">Service fee (%)</label>
+          <input type="number" id="cfFee" min="0" step="0.5" value="5">
+        </div>
+      </div>
+      <div class="field">
+        <label for="cfNotes">Notes</label>
+        <textarea id="cfNotes" placeholder="Any context worth remembering…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-close-modal="clientFormOverlay">Cancel</button>
+      <button class="btn btn-primary" id="cfSaveBtn">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CLIENT PROFILE MODAL ============ -->
+<div class="modal-overlay no-print" id="profileOverlay">
+  <div class="modal" style="max-width:880px;">
+    <div class="modal-header">
+      <div>
+        <h2 id="profileName">Client Name</h2>
+        <span class="mono muted" id="profileId" style="font-size:12px;"></span>
+      </div>
+      <button class="modal-close" data-close-modal="profileOverlay">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs" id="profileTabs">
+        <button class="tab-btn active" data-tab="info">Personal Info</button>
+        <button class="tab-btn" data-tab="loan">Loan Details</button>
+        <button class="tab-btn" data-tab="checklist">Checklist</button>
+        <button class="tab-btn" data-tab="notes">Notes</button>
+        <button class="tab-btn" data-tab="history">History</button>
+      </div>
+
+      <div class="tab-panel active" data-tab-panel="info">
+        <div id="progressTrackerBox" style="margin-bottom:20px;"></div>
+        <div class="field-row">
+          <div class="field"><label>Applicant Name</label><div class="mono" id="pInfoName">—</div></div>
+          <div class="field"><label>Contact Number</label><div class="mono" id="pInfoContact">—</div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Client ID</label><div class="mono" id="pInfoId">—</div></div>
+          <div class="field"><label>Date Created</label><div class="mono" id="pInfoDate">—</div></div>
+        </div>
+        <div class="field"><label>Status</label><div id="pInfoStatus">—</div></div>
+      </div>
+
+      <div class="tab-panel" data-tab-panel="loan">
+        <div class="field-row">
+          <div class="field"><label>Loan Amount</label><div class="mono" id="pLoanAmount">—</div></div>
+          <div class="field"><label>Loan Term</label><div class="mono" id="pLoanTerm">—</div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Loan Type</label><div class="mono" id="pLoanType">—</div></div>
+          <div class="field"><label>Business Type</label><div class="mono" id="pBusinessType">—</div></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Interest Rate</label><div class="mono" id="pInterest">—</div></div>
+          <div class="field"><label>Service Fee</label><div class="mono" id="pFee">—</div></div>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tab-panel="checklist">
+        <div class="field-row" style="margin-bottom:14px;">
+          <input type="search" id="profileChecklistSearch" placeholder="🔎 Search requirements…">
+          <select id="profileChecklistFilter">
+            <option value="all">All items</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Verified</option>
+            <option value="incomplete">Incomplete</option>
+            <option value="rejected">Rejected</option>
+            <option value="basic">Basic Documents</option>
+            <option value="banking">Banking Documents</option>
+            <option value="business">Business Documents</option>
+            <option value="verification">Business Verification</option>
+            <option value="insurance">Insurance</option>
+            <option value="submission">Submission</option>
+          </select>
+        </div>
+        <div id="profileChecklistContainer"></div>
+      </div>
+
+      <div class="tab-panel" data-tab-panel="notes">
+        <div class="field">
+          <label for="pNotesArea">Client notes</label>
+          <textarea id="pNotesArea" style="min-height:160px;" placeholder="General notes about this client…"></textarea>
+          <p class="help">Saves automatically as you type.</p>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-tab-panel="history">
+        <ul class="activity-list" id="pHistoryList"></ul>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" id="pDuplicateBtn">⧉ Duplicate</button>
+      <button class="btn" id="pEditBtn">✎ Edit</button>
+      <button class="btn" id="pPdfBtn">⇩ Download PDF</button>
+      <button class="btn btn-danger" id="pDeleteBtn">🗑 Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/checklist-schema.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/checklist-ui.js"></script>
+<script src="js/pdf.js"></script>
+<script src="js/clients.js"></script>
+</body>
+</html>

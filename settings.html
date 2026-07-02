@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Loan Officer Toolkit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="navbar-root"></div>
+
+<div class="wrap">
+
+  <div style="margin:20px 0 18px;">
+    <span class="eyebrow">Settings</span>
+    <h1 style="font-size:22px;">Configure your toolkit</h1>
+  </div>
+
+  <div class="layout-2col">
+    <div>
+      <div class="panel" style="margin-bottom:20px;">
+        <h2>Company Branding</h2>
+        <p class="sub">Shown in the navbar and on generated PDFs.</p>
+        <div class="field">
+          <label for="setCompanyName">Company name</label>
+          <input type="text" id="setCompanyName" placeholder="e.g. Esquivel Lending Corp.">
+        </div>
+        <div class="field">
+          <label for="setCompanyPrefix">Client ID prefix</label>
+          <input type="text" id="setCompanyPrefix" maxlength="6" placeholder="e.g. ESQ">
+          <p class="help">Used for auto-generated client IDs, e.g. ESQ-2026-0001.</p>
+        </div>
+        <div class="field">
+          <label>Company logo</label>
+          <div style="display:flex; align-items:center; gap:14px;">
+            <img id="logoPreview" class="logo-preview" src="assets/logo.png" alt="Logo preview">
+            <div>
+              <label class="btn btn-sm" style="cursor:pointer;">Upload logo<input type="file" id="logoInput" accept="image/*" style="display:none;"></label>
+              <button class="btn btn-sm" id="resetLogoBtn" style="margin-left:6px;">Reset to default</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Loan Defaults</h2>
+        <p class="sub">Pre-fills new clients and calculator quotes.</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="setInterest">Default interest rate (%/mo)</label>
+            <input type="number" id="setInterest" min="0" step="0.1">
+          </div>
+          <div class="field">
+            <label for="setFee">Default service fee (%)</label>
+            <input type="number" id="setFee" min="0" step="0.5">
+          </div>
+        </div>
+        <div class="field">
+          <label for="setCurrency">Currency</label>
+          <select id="setCurrency">
+            <option value="PHP" selected>Philippine Peso (₱)</option>
+          </select>
+          <p class="help">Additional currencies may be added in a future update.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel" style="margin-bottom:20px;">
+        <h2>Appearance</h2>
+        <p class="sub">Choose how the toolkit looks.</p>
+        <div class="field">
+          <label for="setTheme">Theme</label>
+          <select id="setTheme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="system">System</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>About this data</h2>
+        <p class="sub">Everything below lives only in this browser's local storage.</p>
+        <div class="field" style="margin-bottom:10px;"><div class="flex-between"><span class="muted" style="font-size:13px;">Total clients</span><strong class="mono" id="aboutClients">0</strong></div></div>
+        <div class="field" style="margin-bottom:0;"><div class="flex-between"><span class="muted" style="font-size:13px;">Storage used (est.)</span><strong class="mono" id="aboutStorage">0 KB</strong></div></div>
+        <hr class="divider">
+        <p class="help">For backup, restore, and export tools, visit the <a href="reports.html">Reports</a> page.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-between" style="margin-top:20px;">
+    <span class="muted" style="font-size:12.5px;">Changes save automatically.</span>
+    <button class="btn btn-primary" id="saveSettingsBtn">💾 Save Settings</button>
+  </div>
+
+  <footer class="note">Loan Officer Toolkit</footer>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/checklist-schema.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/settings.js"></script>
+</body>
+</html>
