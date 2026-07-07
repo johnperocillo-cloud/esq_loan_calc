@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Loan Officer Toolkit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="navbar-root"></div>
+
+<div class="wrap">
+
+  <header class="hero no-print">
+    <div class="hero-inner">
+      <span class="eyebrow">Dashboard</span>
+      <h1>Good day! Here's where things stand.</h1>
+      <p id="heroDate"></p>
+    </div>
+  </header>
+
+  <!-- Primary stats -->
+  <div class="stat-grid">
+    <div class="stat-card tone-accent">
+      <div class="label">Total Clients</div>
+      <div class="value" id="statTotalClients">0</div>
+    </div>
+    <div class="stat-card tone-success">
+      <div class="label">Completed Applications</div>
+      <div class="value" id="statCompleted">0</div>
+    </div>
+    <div class="stat-card tone-warning">
+      <div class="label">Pending Applications</div>
+      <div class="value" id="statPending">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Average Completion %</div>
+      <div class="value" id="statAvgCompletion">0%</div>
+    </div>
+  </div>
+
+  <div class="layout-2col">
+    <!-- LEFT: Recent clients + activity -->
+    <div>
+      <div class="panel" style="margin-bottom:20px;">
+        <div class="flex-between" style="margin-bottom:14px;">
+          <div>
+            <h2 style="margin-bottom:2px;">Recent Clients</h2>
+            <p class="sub" style="margin:0;">Latest additions to your pipeline</p>
+          </div>
+          <a href="clients.html" class="btn btn-sm">View all →</a>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="recentClientsTable">
+            <thead>
+              <tr><th>Client ID</th><th>Name</th><th>Loan Amount</th><th>Status</th><th>Completion</th></tr>
+            </thead>
+            <tbody id="recentClientsBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="recentClientsEmpty" style="display:none;">
+          <div class="big-icon">👥</div>
+          <p>No clients yet. <a href="clients.html">Add your first client →</a></p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin-bottom:2px;">Recent Activity</h2>
+        <p class="sub" style="margin:0 0 6px;">What's happened lately</p>
+        <ul class="activity-list" id="activityList"></ul>
+        <div class="empty-state" id="activityEmpty" style="display:none;">
+          <div class="big-icon">🕓</div>
+          <p>No activity yet.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Widgets -->
+    <div>
+      <div class="panel" style="margin-bottom:20px;">
+        <h2>Today</h2>
+        <p class="sub">Snapshot of today's pipeline</p>
+        <div class="field" style="margin-bottom:10px;">
+          <div class="flex-between"><span class="muted" style="font-size:13px;">New clients today</span><strong class="mono" id="widgetTodayClients">0</strong></div>
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <div class="flex-between"><span class="muted" style="font-size:13px;">Pending documents</span><strong class="mono" id="widgetPendingDocs">0</strong></div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <div class="flex-between"><span class="muted" style="font-size:13px;">Completed applications</span><strong class="mono" id="widgetCompletedApps">0</strong></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:20px;">
+        <h2>Portfolio Insights</h2>
+        <p class="sub">Across all clients</p>
+        <div class="field" style="margin-bottom:10px;">
+          <div class="flex-between"><span class="muted" style="font-size:13px;">Average loan amount</span><strong class="mono" id="widgetAvgLoan">₱0.00</strong></div>
+        </div>
+        <div class="field" style="margin-bottom:10px;">
+          <div class="flex-between"><span class="muted" style="font-size:13px;">Largest loan</span><strong class="mono" id="widgetLargestLoan">₱0.00</strong></div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <div class="flex-between"><span class="muted" style="font-size:13px;">Most common type</span><strong class="mono" id="widgetCommonType">—</strong></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Recently Modified</h2>
+        <p class="sub">Clients touched most recently</p>
+        <ul class="activity-list" id="recentlyModifiedList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <footer class="note">Loan Officer Toolkit — all data stored locally in this browser.</footer>
+</div>
+
+<script src="js/storage.js"></script>
+<script src="js/checklist-schema.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
